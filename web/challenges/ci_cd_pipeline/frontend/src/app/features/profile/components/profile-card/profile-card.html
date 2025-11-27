@@ -1,0 +1,131 @@
+<aside class="sidebar">
+  <mat-card class="profileCard">
+    @if (isDialog) {
+    <button matIconButton class="closeButton" (click)="closeDialog?.()">
+      <mat-icon>close</mat-icon>
+    </button>
+    } @if (user) { @if (user.relation !== 'owner' && !isAdmin) {
+    <div class="reportContainer" (click)="openReportDialog()">
+      <button matIconButton>
+        <mat-icon style="margin-bottom: 2px">report</mat-icon>
+      </button>
+      <span>report</span>
+    </div>
+    }
+    <div class="profileHeader">
+      <ng-container>
+        @if (avatarUrl) {
+        <img
+          (click)="preview(avatarUrl)"
+          [src]="avatarUrl"
+          [alt]="user.name || user.username"
+          class="profileAvatar"
+          style="cursor: pointer"
+        />
+        } @else {
+        <img
+          [src]="'/assets/images/default-avatar.jpg'"
+          [alt]="user.name || user.username"
+          class="profileAvatar"
+        />
+        }
+      </ng-container>
+
+      <h1 class="profileName text">{{ user.name || user.username }}</h1>
+      <p class="profileUsername">@{{ user.username }}</p>
+    </div>
+
+    <div class="profileStats">
+      <div class="stat">
+        <span class="statValue">
+          <mat-icon>article</mat-icon>
+          {{ formatNumber(user.postsCount) || 0 }}
+        </span>
+        <span class="statLabel">Posts</span>
+      </div>
+
+      <div class="stat">
+        <span class="statValue">
+          <mat-icon>group</mat-icon>
+          {{ formatNumber(user.subscribersCount) || 0 }}
+        </span>
+        <span class="statLabel">Subscribers</span>
+      </div>
+
+      <div class="stat">
+        <span class="statValue">
+          <mat-icon>visibility</mat-icon>
+          {{ formatNumber(user.impressionsCount) || 0 }}
+        </span>
+        <span class="statLabel">Impressions</span>
+      </div>
+    </div>
+
+    <div class="profileActions">
+      @if (user.relation === 'owner') {
+      <button
+        mat-stroked-button
+        routerLink="/settings"
+        color="warn"
+        (click)="closeDialog && closeDialog()"
+      >
+        <mat-icon>edit</mat-icon> Edit Profile
+      </button>
+      } @else if (user.relation === 'subscribed') {
+      <button mat-stroked-button color="warn" [disabled]="isLoading" (click)="toggleSubscription()">
+        <mat-icon>person_remove</mat-icon> Unsubscribe
+      </button>
+      } @else {
+      <button mat-flat-button color="primary" [disabled]="isLoading" (click)="toggleSubscription()">
+        <mat-icon>person_add</mat-icon> Subscribe
+      </button>
+      } @if (isDialog) {
+      <button
+        mat-stroked-button
+        routerLink="/profile/{{ username }}"
+        color="warn"
+        (click)="closeDialog && closeDialog()"
+      >
+        <mat-icon>person</mat-icon>
+        View Profile
+      </button>
+
+      } @if (isAdmin && user.relation !== 'owner') {
+
+      <button mat-stroked-button [matMenuTriggerFor]="menu" [disabled]="isLoading">
+        Actions <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        @if (user.status === "active") {
+        <button mat-menu-item color="warn" [disabled]="isLoading" (click)="toggleUserBanning()">
+          <mat-icon>person_remove</mat-icon> Ban User
+        </button>
+        } @else if (user.status === "banned") {
+        <button mat-menu-item color="warn" [disabled]="isLoading" (click)="toggleUserBanning()">
+          <mat-icon>person_remove</mat-icon> Unban User
+        </button>
+        } @if (user.role === "USER") {
+
+        <button mat-menu-item color="warn" [disabled]="isLoading" (click)="toggleUserRole()">
+          <mat-icon>person_remove</mat-icon> Make Admin
+        </button>
+        } @else if (user.status === "ADMIN") {
+        <button mat-menu-item color="warn" [disabled]="isLoading" (click)="toggleUserRole()">
+          <mat-icon>person_remove</mat-icon> Make User
+        </button>
+        }
+        <button mat-menu-item color="warn" [disabled]="isLoading" (click)="handleDeleteUser()">
+          <mat-icon>person_remove</mat-icon> Delete User
+        </button>
+      </mat-menu>
+
+      }
+    </div>
+    } @else {
+    <div class="spinner-container">
+      <mat-spinner></mat-spinner>
+    </div>
+    }
+  </mat-card>
+</aside>

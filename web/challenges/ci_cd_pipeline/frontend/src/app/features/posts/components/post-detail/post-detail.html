@@ -1,0 +1,138 @@
+<div class="modalOverlay" (click)="closeDialog()">
+  <mat-card class="modalContent" (click)="stopPropagation($event)">
+    <div class="modalHeader">
+      <div class="headerLeft">
+        <img
+          *ngIf="post?.author"
+          [src]="post.author.avatarUrl || '/assets/images/default-avatar.jpg'"
+          [alt]="post.author.name || 'avatar'"
+          (click)="openUserCardDialog(post.author.username)"
+          class="authorAvatar"
+        />
+        <div class="authorInfo">
+          <h3 *ngIf="post?.author" (click)="openUserCardDialog(post.author.username)">
+            {{ post.author.name }}
+          </h3>
+          <p *ngIf="post?.author">@{{ post.author.username }} · {{ formatDate(post.createdAt) }}</p>
+        </div>
+      </div>
+
+      <div class="headerActions">
+        <div class="menuContainer">
+          @if (post) {
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+
+          <mat-menu #menu="matMenu">
+            @if (post.isOwner || isAdmin) { @if (post.isOwner) {
+            <button mat-menu-item (click)="openEditPostDialog()">
+              <mat-icon>edit</mat-icon>
+              <span>Edit</span>
+            </button>
+            } @if (isAdmin ) {
+            <button mat-menu-item>
+              <mat-icon>visibility_off</mat-icon>
+              <span>Hide</span>
+            </button>
+            } @if (isAdmin || post.isOwner) {
+            <button mat-menu-item (click)="handleDeletePost()">
+              <mat-icon color="warn">delete</mat-icon>
+              <span>Delete</span>
+            </button>
+            }}@else {
+            <button mat-menu-item (click)="openReportDialog()">
+              <mat-icon color="warn">report</mat-icon>
+              <span>Report</span>
+            </button>
+            }
+          </mat-menu>
+          }
+        </div>
+
+        <button mat-icon-button (click)="closeDialog()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    @if (isLoading) {
+    <div class="modalBody">
+      <app-spinner></app-spinner>
+    </div>
+    }@else {
+    <div class="modalBody">
+      <h1 class="postTitle">{{ post.title }}</h1>
+      <div class="postContent">{{ post.body }}</div>
+
+      <div class="postMedias">
+        @if (isMediaLoading) {
+        <div class="spinnerContainer">
+          <mat-spinner></mat-spinner>
+        </div>
+        }@else { @for (m of post.media; track m.id) { @if(m.mediaType.startsWith("video")){
+        <video [src]="m.url" controls class="postMedia"></video>
+        }@else {
+        <img [src]="m.url" [alt]="post.title" class="postMedia" />
+        } } }
+      </div>
+
+      <div class="postMetrics">
+        <div class="metric" style="gap: 0">
+          <button matIconButton class="{{ post.isLiked ? 'primary' : '' }}" (click)="toggleLike()">
+            @if (post.isLiked) {
+            <mat-icon>favorite</mat-icon>
+            }@else {
+            <mat-icon>favorite_border</mat-icon>
+            }
+          </button>
+          <span>{{ post.likesCount || 0 }}</span>
+        </div>
+        <div class="metric">
+          <mat-icon>comment</mat-icon>
+          <span>{{ post.commentsCount || 0 }}</span>
+        </div>
+        <div class="metric">
+          <mat-icon>visibility</mat-icon>
+          <span>{{ post.impressionsCount || 0 }}</span>
+        </div>
+      </div>
+
+      <div class="commentsSection">
+        <h2 class="commentsHeader">Comments ({{ post.commentsCount || 0 }})</h2>
+
+        <div class="commentForm">
+          <textarea
+            [(ngModel)]="commentText"
+            class="commentInput"
+            placeholder="Write a comment..."
+          ></textarea>
+          <button
+            matButton="filled"
+            class="primary"
+            (click)="handleCreateComment()"
+            [disabled]="!commentText.trim()"
+          >
+            Post
+          </button>
+        </div>
+
+        <div class="commentsList">
+          <div *ngFor="let comment of comments" class="comment">
+            <img
+              [src]="comment.author.avatarUrl || '/assets/images/default-avatar.jpg'"
+              [alt]="comment.author.name"
+              class="commentAvatar"
+            />
+            <div class="commentContent">
+              <div class="commentAuthor">{{ comment.author.name }}</div>
+              <div class="commentDate">{{ formatDate(comment.createdAt) }}</div>
+              <div class="commentText">{{ comment.content }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </mat-card>
+</div>

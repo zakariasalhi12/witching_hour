@@ -1,0 +1,4 @@
+<div class="readme-container">
+  <app-spinner *ngIf="isLoading"></app-spinner>
+  <markdown *ngIf="!isLoading" [data]="readmeData"></markdown>
+</div>

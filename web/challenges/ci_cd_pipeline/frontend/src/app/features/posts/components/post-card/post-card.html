@@ -1,0 +1,56 @@
+<mat-card class="postCard" (click)="openPostDetail(post)">
+  <div class="postHeader">
+    <img
+      (click)="openUserCardDialog(post.author.username); $event.stopPropagation()"
+      [src]="post.author.avatarUrl || '/assets/images/default-avatar.jpg'"
+      [alt]="post.author.name"
+      class="authorAvatar"
+    />
+    <div class="authorInfo">
+      <span
+        (click)="openUserCardDialog(post.author.username); $event.stopPropagation()"
+        class="authorName"
+        >{{ post.author.name }}</span
+      >
+      <span class="postDate">@{{ post.author.username }} · {{ formatDate(post.createdAt) }}</span>
+    </div>
+  </div>
+
+  <div class="postBody">
+    <h2 class="postTitle">{{ post.title }}</h2>
+    <p
+      class="postExcerpt"
+      [ngClass]="{
+        'excerpt-with-media': post.media && post.media.length > 0,
+        'excerpt-without-media': !post.media || post.media.length === 0
+      }"
+    >
+      {{ post.body }}
+    </p>
+
+    @if (post.firstMedia) {
+    <div>
+      @if(post.firstMedia.mediaType.startsWith("video")){
+      <video [src]="post.firstMedia.url" muted class="postMedia"></video>
+      }@else {
+      <img [src]="post.firstMedia.url" [alt]="post.title" class="postMedia" />
+      }
+    </div>
+    }
+  </div>
+
+  <div class="postFooter">
+    <div class="metric">
+      <mat-icon>favorite</mat-icon>
+      <span>{{ post.likesCount || 0 }}</span>
+    </div>
+    <div class="metric">
+      <mat-icon>comment</mat-icon>
+      <span>{{ post.commentsCount || 0 }}</span>
+    </div>
+    <div class="metric">
+      <mat-icon>visibility</mat-icon>
+      <span>{{ post.impressionsCount || 0 }}</span>
+    </div>
+  </div>
+</mat-card>
