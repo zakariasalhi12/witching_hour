@@ -1,0 +1,43 @@
+package com.blog.modules.post.domain.port.out;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.data.domain.Pageable;
+
+import com.blog.modules.post.domain.model.Post;
+
+public interface PostRepository {
+
+    List<Post> findAll(Instant before, Pageable pageable);
+
+    List<Post> findByUserId(UUID id, Pageable pageable);
+
+    Optional<Post> findById(UUID id);
+
+    Post save(Post post);
+
+    void attachMediaToPost(UUID postId, UUID mediaId);
+
+    void incrementLikesCount(UUID postId);
+
+    void deleteById(UUID id);
+
+    void decrementLikesCount(UUID postId);
+
+    void incrementImpressionsCount(UUID postIds);
+
+    void hidePostById(UUID postId);
+
+    Boolean existsById(UUID postId);
+
+    List<Post> findByUserUsername(String username, Pageable pageable);
+
+    List<Post> findFeedPosts(UUID currUserId, Instant before, Pageable pageable);
+
+    void incrementCommentsCount(UUID postId);
+
+    void decrementCommentsCount(UUID postId);
+}
