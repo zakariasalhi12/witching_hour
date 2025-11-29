@@ -10,6 +10,12 @@ import (
 )
 
 func main() {
+	flag := os.Getenv("FLAG")
+	if len(flag) < 1 {
+		flag = "CyberZ{n3v3r_run_untru5t3d_c0d3}"
+	}
+
+	os.WriteFile("flag.txt")
 	fmt.Println("Initializing...")
 
 	r := gin.New()

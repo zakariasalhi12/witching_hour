@@ -8,17 +8,11 @@ RUN npm ci --silent || npm install --silent
 COPY frontend/ ./
 RUN npm run build
 
-# --- Go builder ---
-FROM golang:1.24-alpine AS builder
-WORKDIR /src
+FROM golang:1.24-alpine AS final
+WORKDIR /app
 COPY go.mod go.sum ./
 COPY . ./
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/server .
-
-# --- Final runtime image ---
-FROM alpine:3.18
-WORKDIR /app
-COPY --from=builder /app/server /app/server
 COPY --from=frontend-builder /src/frontend/dist /app/frontend/dist
 ENV GIN_MODE=release
 EXPOSE 1330
