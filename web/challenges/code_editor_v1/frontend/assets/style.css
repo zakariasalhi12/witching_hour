@@ -1,0 +1,298 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  background: #0d1117;
+  color: #e6edf3;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#header {
+  background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #21262d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  position: relative;
+}
+
+#header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(88, 166, 255, 0.3),
+    transparent
+  );
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #58a6ff 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+#run-button {
+  background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(35, 134, 54, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+#run-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+#run-button:hover::before {
+  left: 100%;
+}
+
+#run-button:hover {
+  background: linear-gradient(135deg, #2ea043 0%, #3fb950 100%);
+  box-shadow: 0 4px 8px rgba(35, 134, 54, 0.3);
+  transform: translateY(-1px);
+}
+
+#run-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(35, 134, 54, 0.2);
+}
+
+#run-button:disabled {
+  background: #21262d;
+  color: #8b949e;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+#run-button:disabled::before {
+  display: none;
+}
+
+#editor-output-wrapper {
+  flex: 1;
+  display: flex;
+  height: calc(100vh - 65px);
+  position: relative;
+  background: #0d1117;
+}
+
+#editor-container {
+  flex: 2;
+  height: 100%;
+  border-right: 1px solid #21262d;
+  min-width: 200px;
+  background: #0d1117;
+  position: relative;
+}
+
+#editor-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(88, 166, 255, 0.1),
+    transparent
+  );
+}
+
+#resizer {
+  width: 6px;
+  cursor: col-resize;
+  background: #161b22;
+  border-left: 1px solid #21262d;
+  border-right: 1px solid #21262d;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+#resizer::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 40px;
+  background: #30363d;
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+#resizer:hover {
+  background: #1c2128;
+}
+
+#resizer:hover::before {
+  opacity: 1;
+}
+
+#output-container {
+  flex: 1;
+  height: 100%;
+  overflow: auto;
+  min-width: 200px;
+  background: #0d1117;
+  padding: 1.25rem;
+  position: relative;
+}
+
+#output-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+#output-container::-webkit-scrollbar-track {
+  background: #161b22;
+  border-radius: 5px;
+}
+
+#output-container::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 5px;
+  border: 2px solid #161b22;
+}
+
+#output-container::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
+
+.output-lines,
+.error-lines {
+  margin: 0;
+  padding: 0;
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.output-lines div,
+.error-lines div {
+  padding: 0.25rem 0;
+  transition: background-color 0.15s ease;
+  border-radius: 3px;
+  padding-left: 0.5rem;
+  margin-left: -0.5rem;
+}
+
+.output-lines div:hover,
+.error-lines div:hover {
+  background-color: rgba(88, 166, 255, 0.05);
+}
+
+.output {
+  color: #7ee787;
+}
+
+.error {
+  color: #f85149;
+}
+
+.success {
+  color: #7ee787;
+}
+
+.success div {
+  color: #7ee787;
+}
+
+.error div {
+  color: #f85149;
+}
+
+/* Add subtle animation for output updates */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.output-lines,
+.error-lines {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Loading state for run button */
+#run-button:disabled {
+  position: relative;
+}
+
+#run-button:disabled::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  top: 50%;
+  left: 50%;
+  margin-left: -7px;
+  margin-top: -7px;
+  border: 2px solid #8b949e;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Improve focus states */
+button:focus-visible {
+  outline: 2px solid #58a6ff;
+  outline-offset: 2px;
+}
