@@ -15,7 +15,7 @@ func main() {
 		flag = "CyberZ{n3v3r_run_untru5t3d_c0d3}"
 	}
 
-	os.WriteFile("flag.txt")
+	os.WriteFile("flag.txt", []byte(flag), 0644)
 	fmt.Println("Initializing...")
 
 	r := gin.New()
